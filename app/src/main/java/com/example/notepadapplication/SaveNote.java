@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.notepadapplication.noteModel.Note;
 
@@ -31,19 +32,60 @@ public class SaveNote extends AppCompatActivity {
         close=findViewById(R.id.closeBtn);
         databaseHandler=new DatabaseHandler(this);
 
-        save.setOnClickListener(new View.OnClickListener() {
+        Intent intent=getIntent();
+        if(intent.hasExtra("ID")){
+            int id=intent.getIntExtra("ID",-1);
+            Note note2=databaseHandler.getSingleNote(id);
+
+            title.setText(note2.getTitle());
+            date.setText(note2.getDate());
+            body.setText(note2.getBody());
+            save.setText("Update");
+        }
+
+        if (save.getText().toString().equalsIgnoreCase("Save")){
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String titleValue=title.getText().toString();
+                    String dateValue=date.getText().toString();
+                    String bodyVal=body.getText().toString();
+                    Note noteObj=new Note(titleValue,dateValue,bodyVal);
+
+                    databaseHandler.saveNote(noteObj);
+                    Intent intent=new Intent(getApplicationContext(), Notes.class);
+                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(), "Saved", Toast.LENGTH_LONG).show();
+                }
+            });
+        }else {
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id=intent.getIntExtra("ID",-1);
+                    String titleValue=title.getText().toString();
+                    String dateValue=date.getText().toString();
+                    String bodyVal=body.getText().toString();
+                    Note noteObj=new Note(id,titleValue,dateValue,bodyVal);
+
+                    int status=databaseHandler.updateNote(noteObj);
+                    Intent intent=new Intent(getApplicationContext(), Notes.class);
+                    startActivity(intent);
+                    Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_LONG).show();
+
+
+                }
+            });
+        }
+        close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String topic=title.getText().toString();
-                String dateVal=date.getText().toString();
-                String description=body.getText().toString();
-                Note note1=new Note(topic,dateVal,description);
-
-                databaseHandler.saveNote(note1);
-
-                Intent intent=new Intent(getApplicationContext(),Notes.class);
-                startActivity(intent);
+                Intent intent1=new Intent(getApplicationContext(), Notes.class);
+                startActivity(intent1);
             }
         });
+
+
+
     }
 }

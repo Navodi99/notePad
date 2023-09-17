@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 
@@ -15,11 +18,14 @@ import com.example.notepadapplication.noteModel.Note;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Notes extends AppCompatActivity {
+public class Notes extends AppCompatActivity implements Listener{
 
     private ImageButton addButton;
     private List<Note> notes;
     private RecyclerView listNote;
+    private EditText searchBar;
+
+    private DatabaseHandler databaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +34,8 @@ public class Notes extends AppCompatActivity {
 
         addButton=findViewById(R.id.addBtn);
         listNote=findViewById(R.id.notesList);
+        searchBar=findViewById(R.id.edtTextSearch);
+        databaseHandler=new DatabaseHandler(this);
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,16 +44,41 @@ public class Notes extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        notes=new ArrayList();
-        notes.add(new Note(1,"first","2022/1/2","jdbbgbwbgwubgigiegubgu"));
-        notes.add(new Note(2,"Second","2022/1/3","jdbhhhgbwbgwubgigiegubgu"));
-        notes.add(new Note(3,"Third","2022/1/4","jdbbgbmghjgjgwubgigiegubgu"));
-        notes.add(new Note(4,"Forth","2022/1/5","jdbbgbhdhhthrrrrrurwubgigiegubgu"));
-        notes.add(new Note(5,"Fifth","2022/1/6","jdbbgbwbgfdgdrgdgrdvvfgggrgrsg bgigiegubgu"));
 
-        Adapter adapter=new Adapter(this,notes);
+        notes=new DatabaseHandler(this).getNote();
+
+        Adapter adapter=new Adapter(this,notes,this);
         GridLayoutManager gridLayoutManager=new GridLayoutManager(this,4,GridLayoutManager.VERTICAL,false);
         listNote.setLayoutManager(gridLayoutManager);
         listNote.setAdapter(adapter);
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            String title=searchBar.getText().toString().trim();
+            List<Note> result=databaseHandler.search(title);
+
+            Adapter adapter=new Adapter(Notes.this,result,Notes.this);
+                listNote.setAdapter(adapter);
+            }
+        });
+    }
+
+    @Override
+    public void onItemClicked(Note note) {
+        Intent intent=new Intent(getApplicationContext(), ViewNote.class);
+        intent.putExtra("ID",note.getId());
+        startActivity(intent);
+
     }
 }

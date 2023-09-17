@@ -3,16 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="631dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="133dp"
+        android:layout_height="136dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,21 +16,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/btnImgItem"
                 android:layout_width="match_parent"
-                android:background="@color/white"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:backgroundTint="#FFFFFF"
                 app:srcCompat="@drawable/icons8_note_100" />
 
             <TextView
                 android:id="@+id/txtTopic"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Shopping List"
-                android:textAlignment="center" />
+                android:layout_height="36dp"
+                android:maxLength="20"
+                android:text="my note"
+                android:textAlignment="center"
+                android:textSize="14sp" />
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
